@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CodeChallenge.Data;
+using CodeChallenge.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using CodeChallenge.Models;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
-using CodeChallenge.Data;
 
 namespace CodeChallenge.Repositories
 {
@@ -31,6 +30,11 @@ namespace CodeChallenge.Repositories
         {
             return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
         }
+        public Employee GetByIdWithDirectReports(String id)
+        {
+            //I would like to have this include on the existing GetById, but I didn't want to slow it down.
+            return _employeeContext.Employees.Include(dr => dr.DirectReports).SingleOrDefault(e => e.EmployeeId == id);
+        }
 
         public Task SaveAsync()
         {
@@ -41,5 +45,12 @@ namespace CodeChallenge.Repositories
         {
             return _employeeContext.Remove(employee).Entity;
         }
+
+        public Employee GetManager(String id)
+        {
+            return _employeeContext.Employees.Include(e => e.DirectReports)
+                .SingleOrDefault(e => e.DirectReports.Any(m => m.EmployeeId == id));
+        }
+
     }
 }

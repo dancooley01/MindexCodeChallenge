@@ -9,7 +9,7 @@ namespace CodeCodeChallenge.Tests.Integration.Extensions
         public static T DeserializeContent<T>(this HttpResponseMessage message)
         {
             T responseObject = default(T);
-            if(message != null)
+            if (message != null)
             {
                 var responseJson = message.Content.ReadAsStringAsync().Result;
                 responseObject = JsonSerializer.CreateDefault().Deserialize<T>(
