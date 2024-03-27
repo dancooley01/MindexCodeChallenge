@@ -1,13 +1,11 @@
-﻿using System;
-
-using CodeChallenge.Data;
+﻿using CodeChallenge.Data;
 using CodeChallenge.Repositories;
 using CodeChallenge.Services;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace CodeChallenge.Config
 {
@@ -20,7 +18,7 @@ namespace CodeChallenge.Config
             var builder = WebApplication.CreateBuilder(args);
 
             builder.UseEmployeeDB();
-            
+
             AddServices(builder.Services);
 
             var app = builder.Build();
@@ -43,7 +41,10 @@ namespace CodeChallenge.Config
         {
 
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IReportingStructureService, ReportingStructureService>();
+            services.AddScoped<ICompensationService, CompensationService>();
             services.AddScoped<IEmployeeRepository, EmployeeRespository>();
+            services.AddScoped<ICompensationRepository, CompensationRepository>();
 
             services.AddControllers();
         }

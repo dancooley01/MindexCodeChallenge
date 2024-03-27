@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CodeChallenge.Models;
-using Microsoft.Extensions.Logging;
+﻿using CodeChallenge.Models;
 using CodeChallenge.Repositories;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace CodeChallenge.Services
 {
@@ -21,7 +18,7 @@ namespace CodeChallenge.Services
 
         public Employee Create(Employee employee)
         {
-            if(employee != null)
+            if (employee != null)
             {
                 _employeeRepository.Add(employee);
                 _employeeRepository.SaveAsync().Wait();
@@ -32,7 +29,7 @@ namespace CodeChallenge.Services
 
         public Employee GetById(string id)
         {
-            if(!String.IsNullOrEmpty(id))
+            if (!String.IsNullOrEmpty(id))
             {
                 return _employeeRepository.GetById(id);
             }
@@ -42,8 +39,10 @@ namespace CodeChallenge.Services
 
         public Employee Replace(Employee originalEmployee, Employee newEmployee)
         {
-            if(originalEmployee != null)
+            if (originalEmployee != null)
             {
+                //need to add this employee back to the direct report of his manager
+                var manager = _employeeRepository.GetManager(originalEmployee.EmployeeId);
                 _employeeRepository.Remove(originalEmployee);
                 if (newEmployee != null)
                 {
@@ -53,6 +52,7 @@ namespace CodeChallenge.Services
                     _employeeRepository.Add(newEmployee);
                     // overwrite the new id with previous employee id
                     newEmployee.EmployeeId = originalEmployee.EmployeeId;
+                    manager.DirectReports.Add(newEmployee);
                 }
                 _employeeRepository.SaveAsync().Wait();
             }
